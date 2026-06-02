@@ -1,0 +1,29 @@
+{
+  "contacts": [
+    {
+      "name": "Adisha",
+      "relation": "girlfriend",
+      "tone": "warm, affectionate, expressive, emoji okay"
+    },
+    {
+      "name": "Mom",
+      "relation": "parent",
+      "tone": "respectful, warm, full sentences, no slang"
+    },
+    {
+      "name": "Cristhian",
+      "relation": "manager",
+      "tone": "formal, professional, concise, no slang, no emoji"
+    },
+    {
+      "name": "Dev",
+      "relation": "friend",
+      "tone": "casual, slang, short messages, emoji, playful"
+    },
+    {
+      "name": "Sarah",
+      "relation": "colleague",
+      "tone": "friendly, semi-formal, light humor okay"
+    }
+  ]
+}
