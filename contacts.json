@@ -6,14 +6,19 @@
       "tone": "warm, affectionate, expressive, emoji okay"
     },
     {
+      "name": "Wife",
+      "relation": "wife",
+      "tone": "warm, loving, supportive, personal, expressive, emoji okay"
+    },
+    {
       "name": "Mom",
       "relation": "parent",
       "tone": "respectful, warm, full sentences, no slang"
     },
     {
-      "name": "Cristhian",
-      "relation": "manager",
-      "tone": "formal, professional, concise, no slang, no emoji"
+      "name": "Dad",
+      "relation": "parent",
+      "tone": "respectful, brief, warm, straightforward, no slang"
     },
     {
       "name": "Dev",
@@ -21,9 +26,64 @@
       "tone": "casual, slang, short messages, emoji, playful"
     },
     {
+      "name": "Sibling",
+      "relation": "sibling",
+      "tone": "very casual, teasing, inside jokes, slang, emoji"
+    },
+    {
+      "name": "Grandparent",
+      "relation": "grandparent",
+      "tone": "very respectful, simple language, warm, full sentences, no emoji, no slang"
+    },
+    {
+      "name": "Cristhian",
+      "relation": "manager",
+      "tone": "formal, professional, concise, no slang, no emoji"
+    },
+    {
       "name": "Sarah",
       "relation": "colleague",
       "tone": "friendly, semi-formal, light humor okay"
+    },
+    {
+      "name": "Professor",
+      "relation": "professor",
+      "tone": "formal, academic, respectful, full sentences, no slang, no emoji"
+    },
+    {
+      "name": "Recruiter",
+      "relation": "recruiter",
+      "tone": "professional, enthusiastic, concise, no slang"
+    },
+    {
+      "name": "Classmate",
+      "relation": "classmate",
+      "tone": "friendly, casual, academic context, light emoji okay"
+    },
+    {
+      "name": "Acquaintance",
+      "relation": "acquaintance",
+      "tone": "polite, neutral, not too familiar, brief"
+    },
+    {
+      "name": "Unknown",
+      "relation": "unknown",
+      "tone": "neutral, polite, short, ask who is texting"
+    },
+    {
+      "name": "WrongNumber",
+      "relation": "wrong_number",
+      "tone": "polite, very brief, clarify wrong number, no personal info"
+    },
+    {
+      "name": "Scammer",
+      "relation": "scammer",
+      "tone": "do not engage, flag as suspicious, no reply"
+    },
+    {
+      "name": "Spam",
+      "relation": "spam",
+      "tone": "do not engage, no reply needed"
     }
   ]
 }
