@@ -14,19 +14,31 @@ EMBED_DIM       = 100
 HIDDEN_SIZE     = 128
 NUM_LAYERS      = 2
 DROPOUT         = 0.5
-NUM_CLASSES     = 6
+NUM_CLASSES     = 18
 LEARNING_RATE   = 1e-3
 NUM_EPOCHS      = 30
 PATIENCE        = 5
 
 # ── Mood classes ──
 MOOD_CLASSES = [
-    "casual",
-    "emotional",
-    "urgent",
-    "romantic",
-    "confrontational",
-    "family"
+    "casual",           # everyday small talk
+    "emotional",        # sad, vulnerable, venting
+    "excited",          # happy news, hyped up
+    "urgent",           # needs immediate response
+    "romantic",         # loving, affectionate
+    "flirty",           # playful, teasing, light
+    "angry",            # confrontational, upset
+    "anxious",          # nervous, worried
+    "grateful",         # thankful, appreciative
+    "apology",          # saying sorry
+    "question",         # needs an answer
+    "checking_in",      # casual welfare check
+    "supportive",       # encouraging, uplifting
+    "curious",          # interested, asking about something
+    "professional",     # work related, formal
+    "naughty",          # cheeky, mischievous
+    "funny",            # humorous, joking, sarcastic
+    "family"            # family related check in
 ]
 
 # ── Relationship tones ──
