@@ -46,9 +46,9 @@ def load_dailydialog(data_dir):
     Returns:
         tuple: (train_df, val_df, test_df)
     """
-    train_df = pd.read_csv(os.path.join(data_dir, "train.csv"))
-    val_df   = pd.read_csv(os.path.join(data_dir, "validation.csv"))
-    test_df  = pd.read_csv(os.path.join(data_dir, "test.csv"))
+    train_df = pd.read_csv(os.path.join(data_dir, "dailydialog/train.csv"))
+    val_df   = pd.read_csv(os.path.join(data_dir, "dailydialog/validation.csv"))
+    test_df  = pd.read_csv(os.path.join(data_dir, "dailydialog/test.csv"))
 
     print(f"Train conversations : {len(train_df)}")
     print(f"Val conversations   : {len(val_df)}")
