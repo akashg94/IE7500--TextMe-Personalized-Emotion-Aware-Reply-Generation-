@@ -14,18 +14,9 @@ Returns top-k candidate replies.
 import os
 import pickle
 import numpy as np
-import sys
-
-sys.path.append(
-    os.path.join(
-        os.path.dirname(__file__),
-        ".."
-    )
-)
 
 import nltk
 nltk.download("punkt", quiet=True)
-nltk.download("punkt_tab", quiet=True)
 
 from nltk.tokenize import word_tokenize
 from sklearn.metrics.pairwise import cosine_similarity
@@ -42,21 +33,23 @@ import config
 # Configuration
 # =====================================================
 
-GLOVE_PATH = config.GLOVE_PATH
+GLOVE_PATH = os.path.join(
+    config.DATA_DIR,
+    "glove",
+    "glove.6B.100d.txt"
+)
 
 CACHE_FILE = os.path.join(
     os.path.dirname(__file__),
     "dialog_embeddings.pkl"
 )
 
-EMBED_DIM = config.EMBED_DIM
+EMBED_DIM = 100
 
 
 # =====================================================
-# Load GloVe (lazy — only loads when first needed)
+# Load GloVe
 # =====================================================
-
-GLOVE = None
 
 def load_glove():
 
@@ -67,24 +60,22 @@ def load_glove():
         for line in f:
 
             values = line.split()
-            word   = values[0]
-            vector = np.asarray(values[1:], dtype=np.float32)
 
-            glove[word] = vector  # fixed
+            word = values[0]
+
+            vector = np.asarray(
+                values[1:],
+                dtype=np.float32
+            )
+
+            glove[word] = vector
 
     print(f"Loaded {len(glove)} GloVe vectors")
 
     return glove
 
 
-def get_glove():
-    global GLOVE
-
-    if GLOVE is None:
-        print("Loading GloVe embeddings...")
-        GLOVE = load_glove()
-
-    return GLOVE
+GLOVE = load_glove()
 
 
 # =====================================================
@@ -93,13 +84,12 @@ def get_glove():
 
 def sentence_embedding(text):
 
-    glove  = get_glove()  # fixed — lazy load
     tokens = word_tokenize(str(text).lower())
 
     vectors = [
-        glove[token]      # fixed
+        GLOVE[token]
         for token in tokens
-        if token in glove # fixed
+        if token in GLOVE
     ]
 
     if len(vectors) == 0:
@@ -130,18 +120,25 @@ def build_embedding_cache():
 
     for pair in pairs:
 
-        embedding = sentence_embedding(pair["input"])
+        embedding = sentence_embedding(
+            pair["input"]
+        )
 
-        cache.append({
-            "input":     pair["input"],
-            "response":  pair["response"],
-            "embedding": embedding
-        })
+        cache.append(
+            {
+                "input": pair["input"],
+                "response": pair["response"],
+                "embedding": embedding
+            }
+        )
 
     with open(CACHE_FILE, "wb") as f:
         pickle.dump(cache, f)
 
-    print(f"Saved {len(cache)} embeddings to {CACHE_FILE}")
+    print(
+        f"Saved {len(cache)} embeddings "
+        f"to {CACHE_FILE}"
+    )
 
     return cache
 
@@ -149,6 +146,7 @@ def build_embedding_cache():
 def load_embedding_cache():
 
     if os.path.exists(CACHE_FILE):
+
         with open(CACHE_FILE, "rb") as f:
             return pickle.load(f)
 
@@ -157,64 +155,32 @@ def load_embedding_cache():
 
 # =====================================================
 # Mood Filter
-# NOTE: keyword matching is a rough filter.
-# Moods not in MOOD_KEYWORDS pass through unfiltered.
 # =====================================================
 
 MOOD_KEYWORDS = {
-    "casual": [
-        "hey", "hi", "hello", "good morning"
-    ],
-    "emotional": [
-        "sad", "cry", "miss", "hurt"
-    ],
-    "excited": [
-        "awesome", "great", "yay", "excited"
-    ],
-    "urgent": [
-        "asap", "urgent", "immediately", "quick"
-    ],
-    "romantic": [
-        "love", "miss you", "baby", "sweetheart"
-    ],
-    "flirty": [
-        "cute", "haha you", "flirt"
-    ],
-    "angry": [
-        "mad", "angry", "annoyed", "upset"
-    ],
-    "anxious": [
-        "worried", "nervous", "stress", "anxious"
-    ],
+
     "grateful": [
-        "thank you", "thanks", "appreciate"
+        "thank",
+        "thanks"
     ],
+
     "apology": [
-        "sorry", "apologize", "my fault"
+        "sorry"
     ],
-    "question": [
-        "?", "what", "why", "how"
-    ],
-    "checking_in": [
-        "how are you", "checking in", "you okay"
-    ],
+
     "supportive": [
-        "you got this", "proud of you", "keep going"
+        "hope",
+        "good luck",
+        "take care"
     ],
-    "curious": [
-        "interesting", "tell me more", "wonder"
+
+    "romantic": [
+        "love",
+        "miss you"
     ],
-    "professional": [
-        "meeting", "project", "deadline", "work"
-    ],
-    "naughty": [
-        "bad boy", "bad girl", "trouble"
-    ],
-    "funny": [
-        "lol", "haha", "lmao", "joke"
-    ],
-    "family": [
-        "mom", "dad", "family", "sister", "brother"
+
+    "question": [
+        "?"
     ]
 }
 
@@ -236,16 +202,26 @@ def mood_match(response, mood):
 # Retrieval Function
 # =====================================================
 
-def retrieve_candidates(message, mood, top_k=3):
+def retrieve_candidates(
+    message,
+    mood,
+    top_k=3
+):
 
-    cache           = load_embedding_cache()
-    query_embedding = sentence_embedding(message)
+    cache = load_embedding_cache()
+
+    query_embedding = sentence_embedding(
+        message
+    )
 
     candidates = []
 
     for item in cache:
 
-        if not mood_match(item["response"], mood):
+        if not mood_match(
+            item["response"],
+            mood
+        ):
             continue
 
         score = cosine_similarity(
@@ -253,9 +229,17 @@ def retrieve_candidates(message, mood, top_k=3):
             item["embedding"].reshape(1, -1)
         )[0][0]
 
-        candidates.append((item["response"], score))
+        candidates.append(
+            (
+                item["response"],
+                score
+            )
+        )
 
-    candidates.sort(key=lambda x: x[1], reverse=True)
+    candidates.sort(
+        key=lambda x: x[1],
+        reverse=True
+    )
 
     return candidates[:top_k]
 
@@ -275,4 +259,7 @@ if __name__ == "__main__":
     print("\nTop Candidates:\n")
 
     for response, score in results:
-        print(f"{score:.4f} | {response}")
+
+        print(
+            f"{score:.4f} | {response}"
+        )
