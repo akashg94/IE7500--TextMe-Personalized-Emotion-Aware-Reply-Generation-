@@ -14,6 +14,14 @@ Returns top-k candidate replies.
 import os
 import pickle
 import numpy as np
+import sys
+
+sys.path.append(
+    os.path.join(
+        os.path.dirname(__file__),
+        ".."
+    )
+)
 
 import nltk
 nltk.download("punkt", quiet=True)
@@ -33,18 +41,14 @@ import config
 # Configuration
 # =====================================================
 
-GLOVE_PATH = os.path.join(
-    config.DATA_DIR,
-    "glove",
-    "glove.6B.100d.txt"
-)
+GLOVE_PATH = config.GLOVE_PATH
 
 CACHE_FILE = os.path.join(
     os.path.dirname(__file__),
     "dialog_embeddings.pkl"
 )
 
-EMBED_DIM = 100
+EMBED_DIM = config.EMBED_DIM
 
 
 # =====================================================
@@ -68,14 +72,23 @@ def load_glove():
                 dtype=np.float32
             )
 
-            glove[word] = vector
+           glove = get_glove() = vector
 
     print(f"Loaded {len(glove)} GloVe vectors")
 
     return glove
 
 
-GLOVE = load_glove()
+GLOVE = None
+
+def get_glove():
+    global GLOVE
+
+    if GLOVE is None:
+        print("Loading GloVe embeddings...")
+        GLOVE = load_glove()
+
+    return GLOVE
 
 
 # =====================================================
@@ -158,29 +171,94 @@ def load_embedding_cache():
 # =====================================================
 
 MOOD_KEYWORDS = {
-
-    "grateful": [
-        "thank",
-        "thanks"
+    "casual": [
+        "hey", "hi", "hello", "good morning"
     ],
 
-    "apology": [
-        "sorry"
+    "emotional": [
+        "sad", "cry", "miss", "hurt"
     ],
 
-    "supportive": [
-        "hope",
-        "good luck",
-        "take care"
+    "excited": [
+        "awesome", "great", "yay", "excited"
+    ],
+
+    "urgent": [
+        "asap", "urgent", "immediately", "quick"
     ],
 
     "romantic": [
-        "love",
-        "miss you"
+        "love", "miss you", "baby", "sweetheart"
+    ],
+
+    "flirty": [
+        "cute", "😉", "haha you", "flirt"
+    ],
+
+    "angry": [
+        "mad", "angry", "annoyed", "upset"
+    ],
+
+    "anxious": [
+        "worried", "nervous", "stress", "anxious"
+    ],
+
+    "grateful": [
+        "thank you", "thanks", "appreciate"
+    ],
+
+    "apology": [
+        "sorry", "apologize", "my fault"
     ],
 
     "question": [
-        "?"
+        "?", "what", "why", "how"
+    ],
+
+    "checking_in": [
+        "how are you",
+        "checking in",
+        "you okay"
+    ],
+
+    "supportive": [
+        "you got this",
+        "proud of you",
+        "keep going"
+    ],
+
+    "curious": [
+        "interesting",
+        "tell me more",
+        "wonder"
+    ],
+
+    "professional": [
+        "meeting",
+        "project",
+        "deadline",
+        "work"
+    ],
+
+    "naughty": [
+        "bad boy",
+        "bad girl",
+        "trouble"
+    ],
+
+    "funny": [
+        "lol",
+        "haha",
+        "lmao",
+        "joke"
+    ],
+
+    "family": [
+        "mom",
+        "dad",
+        "family",
+        "sister",
+        "brother"
     ]
 }
 
